@@ -1,6 +1,5 @@
 CREATE DATABASE bdparqueo
 
-
 -- Crear la tabla Cliente
 CREATE TABLE Cliente (
 	 idclient INT AUTO_INCREMENT PRIMARY KEY,
@@ -28,8 +27,6 @@ CREATE TABLE Vehiculo (
 );
 
 ALTER TABLE Vehiculo MODIFY COLUMN tipo_Vehiculo VARCHAR(50);
-
-
 
 CREATE TABLE users (
     iduser INT AUTO_INCREMENT PRIMARY KEY,
