@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QComboBox
 
 
 class EditVehicleUI(QDialog):
@@ -7,7 +7,7 @@ class EditVehicleUI(QDialog):
 
         self.vehicle = vehicle
         self.setWindowTitle(f"Editar Vehículo - {vehicle['Placa']}")
-        self.setGeometry(200, 200, 400, 400)
+        self.setGeometry(200, 200, 400, 450)
 
         layout = QVBoxLayout()
 
@@ -19,6 +19,10 @@ class EditVehicleUI(QDialog):
         self.pago_input = QLineEdit(str(vehicle.get("Pago", 0)))
         self.pendiente_input = QLineEdit(str(vehicle.get("Pendiente", 0)))
         self.observaciones_input = QLineEdit(vehicle.get("Observaciones", ""))
+
+        self.estado_combo = QComboBox()
+        self.estado_combo.addItems(["Dentro del Parqueo", "Fuera del Parqueo"])
+        self.estado_combo.setCurrentText(vehicle.get("estado", "Dentro del Parqueo"))
 
         layout.addWidget(QLabel("Tipo de Vehículo:"))
         layout.addWidget(self.tipo_input)
@@ -36,6 +40,8 @@ class EditVehicleUI(QDialog):
         layout.addWidget(self.pendiente_input)
         layout.addWidget(QLabel("Observaciones:"))
         layout.addWidget(self.observaciones_input)
+        layout.addWidget(QLabel("Estado:"))
+        layout.addWidget(self.estado_combo)
 
         save_button = QPushButton("Guardar Cambios")
         save_button.clicked.connect(self.save_changes)
@@ -44,19 +50,25 @@ class EditVehicleUI(QDialog):
         self.setLayout(layout)
 
     def save_changes(self):
-        updated_vehicle = {
-            "idvehicle": self.vehicle.get("idvehicle"),
-            "tipo_Vehiculo": self.tipo_input.text(),
-            "Color": self.color_input.text(),
-            "Placa": self.placa_input.text(),
-            "HoraIngreso": self.hora_ingreso_input.text(),
-            "HoraSalida": self.hora_salida_input.text() or None,
-            "Pago": float(self.pago_input.text()) if self.pago_input.text() else 0,
-            "Pendiente": float(self.pendiente_input.text()) if self.pendiente_input.text() else 0,
-            "Observaciones": self.observaciones_input.text()
-        }
-
+        """Guardar los cambios del vehículo."""
         try:
+            updated_vehicle = {
+                "idvehicle": self.vehicle.get("idvehicle"),
+                "tipo_Vehiculo": self.tipo_input.text().strip(),
+                "Color": self.color_input.text().strip(),
+                "Placa": self.placa_input.text().strip(),
+                "HoraIngreso": self.hora_ingreso_input.text().strip(),
+                "HoraSalida": self.hora_salida_input.text().strip() or None,
+                "Pago": float(self.pago_input.text()) if self.pago_input.text() else 0,
+                "Pendiente": float(self.pendiente_input.text()) if self.pendiente_input.text() else 0,
+                "Observaciones": self.observaciones_input.text().strip(),
+                "estado": self.estado_combo.currentText()
+            }
+
+            if not updated_vehicle["tipo_Vehiculo"] or not updated_vehicle["Placa"]:
+                QMessageBox.warning(self, "Advertencia", "Por favor, complete los campos obligatorios.")
+                return
+
             from controllers.vehicle_controller import VehicleController
             success = VehicleController.update_vehicle(updated_vehicle)
 

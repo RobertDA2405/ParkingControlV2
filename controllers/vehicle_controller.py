@@ -35,8 +35,8 @@ class VehicleController:
                 print(f"Vehículo con placa {placa} no encontrado o ya está fuera del parqueo.")
                 return False
 
-            pendiente = vehicle["Pendiente"]
-            pago_acumulado = vehicle["Pago"]
+            pendiente = float(vehicle["Pendiente"])
+            pago_acumulado = float(vehicle["Pago"])
 
             nuevo_pendiente = pendiente - (pago or 0)
             nuevo_pendiente = max(0, nuevo_pendiente)
@@ -84,10 +84,16 @@ class VehicleController:
                 WHERE idvehicle = %s
             """
             params = (
-                updated_vehicle["tipo_Vehiculo"], updated_vehicle["Color"], updated_vehicle["Placa"],
-                updated_vehicle["HoraIngreso"], updated_vehicle["HoraSalida"], updated_vehicle["Pago"],
-                updated_vehicle["Pendiente"], updated_vehicle["Observaciones"], updated_vehicle["estado"],
-                updated_vehicle["idvehicle"]
+                updated_vehicle.get("tipo_Vehiculo", ""),
+                updated_vehicle.get("Color", ""),
+                updated_vehicle.get("Placa", ""),
+                updated_vehicle.get("HoraIngreso", ""),
+                updated_vehicle.get("HoraSalida", None),
+                float(updated_vehicle.get("Pago", 0)),
+                float(updated_vehicle.get("Pendiente", 0)),
+                updated_vehicle.get("Observaciones", ""),
+                updated_vehicle.get("estado", "Dentro del Parqueo"),
+                updated_vehicle.get("idvehicle")
             )
             db.execute_query(query, params)
             return True
