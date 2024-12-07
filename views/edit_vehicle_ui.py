@@ -53,7 +53,7 @@ class EditVehicleUI(QDialog):
         """Guardar los cambios del vehículo."""
         try:
             updated_vehicle = {
-                "idvehicle": self.vehicle.get("idvehicle"),
+                "idvehicle": int(self.vehicle.get("idvehicle")),
                 "tipo_Vehiculo": self.tipo_input.text().strip(),
                 "Color": self.color_input.text().strip(),
                 "Placa": self.placa_input.text().strip(),
@@ -62,7 +62,7 @@ class EditVehicleUI(QDialog):
                 "Pago": float(self.pago_input.text()) if self.pago_input.text() else 0,
                 "Pendiente": float(self.pendiente_input.text()) if self.pendiente_input.text() else 0,
                 "Observaciones": self.observaciones_input.text().strip(),
-                "estado": self.estado_combo.currentText()
+                "estado": self.estado_combo.currentText().strip()
             }
 
             if not updated_vehicle["tipo_Vehiculo"] or not updated_vehicle["Placa"]:

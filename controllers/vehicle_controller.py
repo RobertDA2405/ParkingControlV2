@@ -10,7 +10,16 @@ class VehicleController:
                 INSERT INTO Vehiculo (tipo_Vehiculo, Color, Placa, HoraIngreso, HoraSalida, Pago, Pendiente, Observaciones, idclient, estado)
                 VALUES (%s, %s, %s, %s, NULL, %s, %s, %s, %s, 'Dentro del Parqueo')
             """
-            params = (tipo_vehiculo, color, placa, hora_ingreso, pago, pendiente, observaciones, idclient)
+            params = (
+                tipo_vehiculo.strip(),
+                color.strip(),
+                placa.strip(),
+                hora_ingreso.strip(),
+                float(pago),
+                float(pendiente),
+                observaciones.strip(),
+                idclient
+            )
             db.execute_query(query, params)
             return True
         except Exception as e:
@@ -30,16 +39,15 @@ class VehicleController:
                 FROM Vehiculo 
                 WHERE Placa = %s AND estado = 'Dentro del Parqueo'
             """
-            vehicle = db.fetch_one(query_select, (placa,))
+            vehicle = db.fetch_one(query_select, (placa.strip(),))
             if not vehicle:
                 print(f"Vehículo con placa {placa} no encontrado o ya está fuera del parqueo.")
                 return False
 
-            pendiente = float(vehicle["Pendiente"])
-            pago_acumulado = float(vehicle["Pago"])
+            pendiente = float(vehicle["Pendiente"] or 0)
+            pago_acumulado = float(vehicle["Pago"] or 0)
 
-            nuevo_pendiente = pendiente - (pago or 0)
-            nuevo_pendiente = max(0, nuevo_pendiente)
+            nuevo_pendiente = max(pendiente - (pago or 0), 0)
             nuevo_pago = pago_acumulado + (pago or 0)
 
             query_update = """
@@ -47,7 +55,7 @@ class VehicleController:
                 SET HoraSalida = %s, Pago = %s, Pendiente = %s, estado = 'Fuera del Parqueo'
                 WHERE Placa = %s AND estado = 'Dentro del Parqueo'
             """
-            params = (hora_salida, nuevo_pago, nuevo_pendiente, placa)
+            params = (hora_salida.strip(), nuevo_pago, nuevo_pendiente, placa.strip())
             db.execute_query(query_update, params)
             return True
         except Exception as e:
@@ -63,7 +71,7 @@ class VehicleController:
         db = Database()
         try:
             query = "DELETE FROM Vehiculo WHERE Placa = %s"
-            db.execute_query(query, (placa,))
+            db.execute_query(query, (placa.strip(),))
             return True
         except Exception as e:
             db.conn.rollback()
@@ -84,16 +92,16 @@ class VehicleController:
                 WHERE idvehicle = %s
             """
             params = (
-                updated_vehicle.get("tipo_Vehiculo", ""),
-                updated_vehicle.get("Color", ""),
-                updated_vehicle.get("Placa", ""),
-                updated_vehicle.get("HoraIngreso", ""),
+                updated_vehicle.get("tipo_Vehiculo", "").strip(),
+                updated_vehicle.get("Color", "").strip(),
+                updated_vehicle.get("Placa", "").strip(),
+                updated_vehicle.get("HoraIngreso", "").strip(),
                 updated_vehicle.get("HoraSalida", None),
                 float(updated_vehicle.get("Pago", 0)),
                 float(updated_vehicle.get("Pendiente", 0)),
-                updated_vehicle.get("Observaciones", ""),
-                updated_vehicle.get("estado", "Dentro del Parqueo"),
-                updated_vehicle.get("idvehicle")
+                updated_vehicle.get("Observaciones", "").strip(),
+                updated_vehicle.get("estado", "Dentro del Parqueo").strip(),
+                int(updated_vehicle.get("idvehicle"))
             )
             db.execute_query(query, params)
             return True
