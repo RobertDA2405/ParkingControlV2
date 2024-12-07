@@ -116,12 +116,6 @@ Aquí tienes un **README.md** para tu repositorio:
 
 ## **Créditos**
 
-Desarrollado por [Tu Nombre] como una solución eficiente para la gestión de parqueos.
-
----
-
-## **Licencia**
-
-Este proyecto está bajo la licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+Desarrollado por Roberto David Aráuz Meynard, Garett Antonio Sanchéz Llanes, Alejandra Elizabeth Hernandez Galan, Alexander Samuel Huete García como una solución eficiente para la gestión de parqueos.
 
 ---
