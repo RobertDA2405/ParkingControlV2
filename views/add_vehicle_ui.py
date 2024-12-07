@@ -6,6 +6,7 @@ from controllers.vehicle_controller import VehicleController
 
 class AddVehicleUI(QDialog):
     VEHICLE_PRICES = {
+        "Selecciona el tipo de vehículo": 0,
         "Carro": 30,
         "Moto": 20,
         "Caponera": 30,
