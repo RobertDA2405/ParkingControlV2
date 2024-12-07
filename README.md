@@ -1,5 +1,3 @@
-Aquí tienes un **README.md** para tu repositorio:
-
 ---
 
 # **ParkingControl - Sistema de Gestión de Parqueo**
